@@ -1,2 +1,39 @@
 
+services:
 
+  frontend:
+
+    build:
+      context: ./conduit-frontend
+      dockerfile: Dockerfile
+      args:
+        API_URL: ${API_URL}
+    environment:
+      - API_URL=${API_URL}  
+    env_file: .env    
+    container_name: conduit-frontend
+    ports:
+      - ${FRONTEND_EXTERNAL_PORT:-4200}:80
+    restart: on-failure
+    networks:
+      - conduit-network
+
+  backend:
+    build:
+      context: ./conduit-backend
+      dockerfile: Dockerfile
+    env_file: .env
+    container_name: conduit-backend
+    volumes:
+      - conduit-volume:/app/db
+    ports:
+      - ${BACKEND_EXTERNAL_PORT:-3000}:8000
+    restart: on-failure
+    networks:
+      - conduit-network
+
+volumes:
+  conduit-volume:
+
+networks:
+  conduit-network:
