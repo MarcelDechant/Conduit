@@ -1,7 +1,7 @@
 
 # Conduit
 
-## Containerization of an Frontend and Backend application
+## Containerization of a Frontend and Backend application
 
 This repository serves as a guide for containerizing a simple [Frontend](https://github.com/MarcelDechant/conduit-frontend) and associated [Backend](https://github.com/MarcelDechant/conduit-backend) application using **Docker Compose**.  
   
@@ -10,7 +10,7 @@ This Repository was created as part of my training at the **Developer Academy**.
 ## Table of Contents
 
 - [Conduit](#conduit)
-  - [Containerization of an Frontend and Backend application](#containerization-of-an-frontend-and-backend-application)
+  - [Containerization of a Frontend and Backend application](#containerization-of-a-frontend-and-backend-application)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Description](#description)
@@ -55,30 +55,42 @@ This section provides a fast and **minimal setup guide** for using the tools in 
     git clone git@github.com:MarcelDechant/Conduit.git
     ```
 
-2. Init and update the **submodules**:
+2. Change into the project directory:
+
+    ```bash
+    cd Conduit
+    ```
+
+3. Init and update the **submodules**:
 
     ```bash
     git submodule init
     git submodule update
     ```
 
-3. Configure the **environment variables**:
+4. Configure the **environment variables**:
     * Copy the content of the [`example.env`](example.env) file into an .env file.
+
+    * You can use the following command:
+    
+    ```bash
+    cp example.env .env
+    ```
 
     * The new `.env` file should contain all the environment variables - **all of them are required** to run the frontend and backend application!
 
-4. **Build and start the containers** in the background (detached mode):
+5. **Build and start the containers** in the background (detached mode):
 
     ```bash
     docker compose up --build -d
     ```
 
-5. Check whether the **containers are running** correctly:
+6. Check whether the **containers are running** correctly:
 
-* Browse to your **IP_ADDRESS:8282** to open the `Frontend`, you should see something like this:
+* Browse to your **<your_ip>:8282** to open the `Frontend`, you should see something like this:
     ![conduit-frontend](frontend.png)
 
-* Browse to your **IP_ADDRESS:8383/admin** to open the `Backend`, you should see this:
+* Browse to your **<your_ip>:8383/admin** to open the `Backend`, you should see this:
     ![conduit-backend](backend.png)
 
 ## Usage
@@ -92,13 +104,19 @@ This section provides a fast and **minimal setup guide** for using the tools in 
     git clone git@github.com:MarcelDechant/Conduit.git
     ```
 
-2. Init and update the **submodules**:
+2. Change into the project directory:
+
+    ```bash
+    cd Conduit
+    ```
+
+3. Init and update the **submodules**:
 
     ```bash
     git submodule init
     git submodule update
     ```
-1. Configure the **environment variables**:
+4. Configure the **environment variables**:
     * Copy the content of the [`example.env`](example.env) file into an .env file. It should contain all the environment variables - **all of them are required** to run the frontend and backend application:
 
     | Variable | Description | Type | Default Value |
