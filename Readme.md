@@ -95,6 +95,17 @@ This section provides a fast and **minimal setup guide** for using the tools in 
 
 ## Usage
 
+    You can set up the project in two ways:
+
+* **Automatic Deployment**: Use the [`workflow`](.github/workflows/workflows.md) to clone and deploy the project.
+  * Automatically deploy the project to a remote server via SSH
+  * Keep your project up-to-date without manual intervention
+  * Avoid manual setup and configuration
+
+* **Manual Setup**: Follow the steps below. You can still use the workflow after this setup for updating the project.
+  * Want to run the project locally
+  * Prefer to configure everything yourself
+
 ### Installation and Preparation
 
 1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the project to your platform if you just want to use it:
