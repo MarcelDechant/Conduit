@@ -3,13 +3,13 @@ services:
 
   frontend:
     # for build with Docker hub
-    image: marceldechant/conduit-frontend:server
+    # image: marceldechant/conduit-frontend:latest
     # for manual build process
-    # build:
-    #   context: ./conduit-frontend
-    #   dockerfile: Dockerfile
-    #   args:
-    #     API_URL: ${API_URL}
+    build:
+      context: ./conduit-frontend
+      dockerfile: Dockerfile
+      args:
+        API_URL: ${API_URL}
     environment:
       - API_URL=${API_URL}  
     env_file: .env    
@@ -22,11 +22,11 @@ services:
 
   backend:
     # for build with Docker hub
-    image: marceldechant/conduit-backend:server
+    # image: marceldechant/conduit-backend:latest
     # for manual build process
-    # build:
-    #   context: ./conduit-backend
-    #   dockerfile: Dockerfile
+    build:
+      context: ./conduit-backend
+      dockerfile: Dockerfile
     env_file: .env
     container_name: conduit-backend
     volumes:
