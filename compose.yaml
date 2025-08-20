@@ -1,0 +1,44 @@
+
+services:
+
+  frontend:
+    # for build with Docker hub
+    image: marceldechant/conduit-frontend:server
+    # for manual build process
+    # build:
+    #   context: ./conduit-frontend
+    #   dockerfile: Dockerfile
+    #   args:
+    #     API_URL: ${API_URL}
+    environment:
+      - API_URL=${API_URL}  
+    env_file: .env    
+    container_name: conduit-frontend
+    ports:
+      - ${FRONTEND_EXTERNAL_PORT:-4200}:80
+    restart: on-failure
+    networks:
+      - conduit-network
+
+  backend:
+    # for build with Docker hub
+    image: marceldechant/conduit-backend:server
+    # for manual build process
+    # build:
+    #   context: ./conduit-backend
+    #   dockerfile: Dockerfile
+    env_file: .env
+    container_name: conduit-backend
+    volumes:
+      - conduit-volume:/app/db
+    ports:
+      - ${BACKEND_EXTERNAL_PORT:-3000}:8000
+    restart: on-failure
+    networks:
+      - conduit-network
+
+volumes:
+  conduit-volume:
+
+networks:
+  conduit-network:
