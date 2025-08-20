@@ -34,12 +34,12 @@ jobs:
       - name: Create .env-file with required environment variables
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ vars.DEBUG }}
-          ALLOWED_HOSTS: ${{ vars.ALLOWED_HOSTS }}
-          CORS_ORIGIN_WHITELIST: ${{ vars.CORS_ORIGIN_WHITELIST }}
           DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
           DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL }}
           DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          DEBUG: ${{ vars.DEBUG }}
+          ALLOWED_HOSTS: ${{ vars.ALLOWED_HOSTS }}
+          CORS_ORIGIN_WHITELIST: ${{ vars.CORS_ORIGIN_WHITELIST }}
           API_URL: ${{ vars.API_URL }}
           BACKEND_EXTERNAL_PORT: ${{ vars.BACKEND_EXTERNAL_PORT }}
           FRONTEND_EXTERNAL_PORT: ${{ vars.FRONTEND_EXTERNAL_PORT }}
