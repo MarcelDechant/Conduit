@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_OWNER: MarcelDechant
+  IMAGE_OWNER: marceldechant
 
 jobs:
   # build container images in GitHub Actions Runner and push build images in ghcr
