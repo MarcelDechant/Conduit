@@ -3,7 +3,7 @@ services:
 
   frontend:
     # for build with Docker hub
-    # image: marceldechant/conduit-frontend:latest
+    image: ghcr.io/marceldechant/conduit-frontend:latest
     # for manual build process
     build:
       context: ./conduit-frontend
@@ -22,11 +22,11 @@ services:
 
   backend:
     # for build with Docker hub
-    # image: marceldechant/conduit-backend:latest
+    image: ghcr.io/marceldechant/conduit-backend:latest
     # for manual build process
-    build:
-      context: ./conduit-backend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./conduit-backend
+    #   dockerfile: Dockerfile
     env_file: .env
     container_name: conduit-backend
     volumes:
