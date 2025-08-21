@@ -1,0 +1,107 @@
+name: Build & Deploy Conduit
+on: 
+  #push:
+  #  branches: [ "main" ]
+  
+  workflow_dispatch:
+
+env:
+  IMAGE_OWNER: marceldechant
+
+jobs:
+  # build container images in GitHub Actions Runner and push build images in ghcr
+  build:
+    runs-on: ubuntu-latest
+    permissions: 
+      packages: write  # for GHCR-Push
+      contents: read
+    steps:
+      - name: Clone the repository into the GitHub Actions Runner
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+      
+      - name: Log in to the GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create .env-file with required environment variables
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+          DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL }}
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          DEBUG: ${{ vars.DEBUG }}
+          ALLOWED_HOSTS: ${{ vars.ALLOWED_HOSTS }}
+          CORS_ORIGIN_WHITELIST: ${{ vars.CORS_ORIGIN_WHITELIST }}
+          API_URL: ${{ vars.API_URL }}
+          BACKEND_EXTERNAL_PORT: ${{ vars.BACKEND_EXTERNAL_PORT }}
+          FRONTEND_EXTERNAL_PORT: ${{ vars.FRONTEND_EXTERNAL_PORT }}
+        run: env > .env
+
+      - name: Conduit Frontend - build docker image in runner and push to registry
+        uses: docker/build-push-action@v6.14.0
+        with:
+          context: ./conduit-frontend
+          file: ./conduit-frontend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.IMAGE_OWNER }}/conduit-frontend:latest
+          build-args: |
+            API_URL=${{ vars.API_URL }}
+          no-cache: true
+      
+      - name: Conduit Backend - build docker image in runner and push to registry
+        uses: docker/build-push-action@v6.14.0
+        with:
+          context: ./conduit-backend
+          file: ./conduit-backend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.IMAGE_OWNER }}/conduit-backend:latest
+          no-cache: true
+      
+      - name: Store the deployment files for the next job
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: deploy-files
+          path: |
+            .env
+            compose.yaml
+          include-hidden-files: true
+
+  # delivers deploy files to the target server and starts the container
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download the deployment files into GitHubActions Runner
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: deploy-files
+
+      - name: Transfer the deployment files via SCP to target server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '.env,compose.yaml'
+          target: ${{ secrets.DEPLOY_DIR }}
+          overwrite: true
+
+      - name: Start the Docker containers on the target server via SSH 
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            docker-compose down --remove-orphans
+            # docker system prune -a -f
+            docker-compose up -d
